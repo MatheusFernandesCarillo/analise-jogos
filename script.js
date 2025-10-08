@@ -15,6 +15,14 @@ function inicializarSelect2() {
         width: '100%',
         theme: 'default'
     });
+    
+    // Inicializar também o select de franquia
+    $('#franquia-select').select2({
+        placeholder: 'Selecione uma franquia...',
+        allowClear: false,
+        width: '200px',
+        theme: 'default'
+    });
 }
 
 async function carregarDados() {
@@ -30,7 +38,7 @@ async function carregarDados() {
         atualizarDashboard();
         inicializarAnalises();
         
-        // ADICIONE ESTAS 2 LINHAS PARA FORÇAR A ANÁLISE DE FRANQUIAS:
+        // FORÇAR A ANÁLISE DE FRANQUIAS
         const regiao = document.getElementById('regiao-select').value;
         atualizarAnaliseFranquias(regiao);
         
@@ -418,13 +426,18 @@ function atualizarDetalhesFranquia() {
     const dados = dadosFiltrados.length > 0 ? dadosFiltrados : dadosCompletos;
     
     const jogosFranquia = dados.filter(jogo => 
-        jogo.Nome && jogo.Nome.toLowerCase().includes(franquiaSelecionada.toLowerCase())
+        jogo.Nome && jogo.Nome.toLowerCase().includes(franquiaSelequiaSelecionada.toLowerCase())
     );
     
     if (jogosFranquia.length === 0) {
         alert(`Nenhum jogo encontrado para a franquia ${franquiaSelecionada}`);
         return;
     }
+    
+    // Esconder mensagem inicial e mostrar gráfico/estatísticas
+    document.getElementById('initial-message').style.display = 'none';
+    document.getElementById('chart-detalhes-franquia').style.display = 'block';
+    document.getElementById('estatisticas-franquia').style.display = 'block';
     
     // Top 10 jogos da franquia
     const topJogos = jogosFranquia
@@ -740,5 +753,3 @@ function mostrarLoading(mostrar) {
 document.getElementById('regiao-select').addEventListener('change', function() {
     atualizarDashboard();
 });
-
-
