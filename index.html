@@ -56,10 +56,52 @@
                 <button onclick="aplicarFiltros()" class="filter-btn">Aplicar Filtros</button>
                 <button onclick="limparFiltros()" class="filter-btn secondary">Limpar Filtros</button>
             </div>
+
+            <!-- Filtros para Análise de Franquias -->
+            <div class="filters-card" id="franquia-filters" style="display: none;">
+                <h3>🎯 Análise de Franquias</h3>
+                <div class="filter-group">
+                    <label>Selecione uma franquia:</label>
+                    <select id="franquia-select" class="filter-select">
+                        <option value="Call of Duty">Call of Duty</option>
+                        <option value="FIFA">FIFA</option>
+                        <option value="Mario">Mario</option>
+                        <option value="Pokémon">Pokémon</option>
+                    </select>
+                </div>
+                <button onclick="atualizarDetalhesFranquia()" class="filter-btn">Analisar Franquia</button>
+            </div>
+
+            <!-- Filtros para Comparador Regional -->
+            <div class="filters-card" id="regional-filters" style="display: none;">
+                <h3>🌍 Comparador Regional</h3>
+                <div class="filter-group">
+                    <label>Gênero:</label>
+                    <select id="genero-regional-select" class="filter-select">
+                        <!-- Populado via JavaScript -->
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Região:</label>
+                    <select id="regiao-comparacao-select" class="filter-select">
+                        <option value="Vendas_EUA">América do Norte</option>
+                        <option value="Vendas_Europa">Europa</option>
+                        <option value="Vendas_Japão">Japão</option>
+                        <option value="Vendas_Outros">Resto do Mundo</option>
+                        <option value="Vendas_Global">Global</option>
+                    </select>
+                </div>
+                <button onclick="atualizarAnaliseRegional()" class="filter-btn">Analisar Região</button>
+            </div>
         </div>
 
         <!-- Conteúdo Principal -->
         <div class="main-content">
+            <!-- Região Selecionada -->
+            <div class="region-info">
+                <h2 id="regiao-atual">Região: Global</h2>
+            </div>
+
             <!-- Métricas -->
             <div class="section">
                 <h2>📊 Métricas Gerais</h2>
@@ -95,7 +137,9 @@
                 </div>
             </div>
 
-            <!-- Gráficos -->
+            <div class="divider"></div>
+
+            <!-- Gráficos Principais -->
             <div class="section">
                 <h2>📈 Análise de Vendas</h2>
                 <div class="charts-grid">
@@ -110,11 +154,70 @@
                 </div>
             </div>
 
-            <!-- Franquias -->
+            <div class="divider"></div>
+
+            <!-- Análise de Franquias -->
             <div class="section">
-                <h2>🎯 Franquias Mais Lucrativas</h2>
-                <div class="chart-card full-width">
-                    <div id="chart-franquias" class="chart-container"></div>
+                <div class="section-header">
+                    <h2>🎯 Franquias Mais Lucrativas</h2>
+                    <button onclick="toggleSection('franquia')" class="toggle-btn">Mostrar Análise</button>
+                </div>
+                <div id="franquia-content" style="display: none;">
+                    <div class="chart-card full-width">
+                        <div id="chart-franquias" class="chart-container"></div>
+                    </div>
+                    
+                    <!-- Métricas das Franquias -->
+                    <div class="metrics-grid" id="franquia-metrics">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+
+                    <!-- Detalhes da Franquia -->
+                    <div class="chart-card full-width" id="detalhes-franquia" style="display: none;">
+                        <h3 id="titulo-franquia">Detalhes da Franquia</h3>
+                        <div id="chart-detalhes-franquia" class="chart-container"></div>
+                        <div id="estatisticas-franquia" class="stats-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <!-- Comparador Regional -->
+            <div class="section">
+                <div class="section-header">
+                    <h2>🌍 Comparador de Preferências Regionais</h2>
+                    <button onclick="toggleSection('regional')" class="toggle-btn">Mostrar Análise</button>
+                </div>
+                <div id="regional-content" style="display: none;">
+                    <!-- Métricas Regionais -->
+                    <div class="metrics-grid" id="regional-metrics">
+                        <!-- Preenchido via JavaScript -->
+                    </div>
+
+                    <!-- Gráficos Regionais -->
+                    <div class="charts-grid">
+                        <div class="chart-card">
+                            <h3>📊 Participação por Região</h3>
+                            <div id="chart-comparacao-regional" class="chart-container"></div>
+                        </div>
+                        <div class="chart-card">
+                            <h3>📈 Evolução Temporal</h3>
+                            <div id="chart-evolucao-regional" class="chart-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Comparação com Outros Gêneros -->
+                    <div class="chart-card full-width">
+                        <h3>🔄 Comparação com Outros Gêneros</h3>
+                        <div id="chart-comparacao-generos" class="chart-container"></div>
+                    </div>
+
+                    <!-- Top Jogos -->
+                    <div class="chart-card full-width">
+                        <h3>🎮 Top 5 Jogos do Gênero</h3>
+                        <div id="tabela-top-jogos"></div>
+                    </div>
                 </div>
             </div>
 
