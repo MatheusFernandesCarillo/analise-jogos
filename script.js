@@ -29,6 +29,11 @@ async function carregarDados() {
         popularFiltros();
         atualizarDashboard();
         inicializarAnalises();
+        
+        // ADICIONE ESTAS 2 LINHAS PARA FORÇAR A ANÁLISE DE FRANQUIAS:
+        const regiao = document.getElementById('regiao-select').value;
+        atualizarAnaliseFranquias(regiao);
+        
         mostrarLoading(false);
     } catch (error) {
         console.error('Erro ao carregar dados:', error);
@@ -735,4 +740,5 @@ function mostrarLoading(mostrar) {
 document.getElementById('regiao-select').addEventListener('change', function() {
     atualizarDashboard();
 });
+
 
