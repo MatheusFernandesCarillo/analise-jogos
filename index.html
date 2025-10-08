@@ -57,21 +57,6 @@
                 <button onclick="limparFiltros()" class="filter-btn secondary">Limpar Filtros</button>
             </div>
 
-            <!-- Filtros para Análise de Franquias -->
-            <div class="filters-card">
-                <h3>🎯 Análise de Franquias</h3>
-                <div class="filter-group">
-                    <label>Selecione uma franquia:</label>
-                    <select id="franquia-select" class="filter-select">
-                        <option value="Call of Duty">Call of Duty</option>
-                        <option value="FIFA">FIFA</option>
-                        <option value="Mario">Mario</option>
-                        <option value="Pokémon">Pokémon</option>
-                    </select>
-                </div>
-                <button onclick="atualizarDetalhesFranquia()" class="filter-btn">Analisar Franquia</button>
-            </div>
-
             <!-- Filtros para Comparador Regional -->
             <div class="filters-card">
                 <h3>🌍 Comparador Regional</h3>
@@ -171,9 +156,23 @@
 
                     <!-- Detalhes da Franquia -->
                     <div class="chart-card full-width" id="detalhes-franquia">
-                        <h3 id="titulo-franquia">Selecione uma franquia para ver os detalhes</h3>
-                        <div id="chart-detalhes-franquia" class="chart-container"></div>
-                        <div id="estatisticas-franquia" class="stats-container"></div>
+                        <div class="franquia-header">
+                            <h3>📊 Detalhes da Franquia</h3>
+                            <div class="franquia-selector">
+                                <select id="franquia-select" class="filter-select">
+                                    <option value="Call of Duty">Call of Duty</option>
+                                    <option value="FIFA">FIFA</option>
+                                    <option value="Mario">Mario</option>
+                                    <option value="Pokémon">Pokémon</option>
+                                </select>
+                                <button onclick="atualizarDetalhesFranquia()" class="filter-btn">Analisar Franquia</button>
+                            </div>
+                        </div>
+                        <div class="initial-message" id="initial-message">
+                            <p>Selecione uma franquia acima e clique em "Analisar Franquia" para ver os detalhes</p>
+                        </div>
+                        <div id="chart-detalhes-franquia" class="chart-container" style="display: none;"></div>
+                        <div id="estatisticas-franquia" class="stats-container" style="display: none;"></div>
                     </div>
                 </div>
             </div>
@@ -236,4 +235,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
