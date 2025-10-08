@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Jogos | 1980 - 2017</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <h1>🎲 Dashboard de Análise de Jogos</h1>
+            <p>Análise de vendas de jogos de 1980 a 2017</p>
+        </header>
+
+        <!-- Filtros -->
+        <div class="sidebar">
+            <div class="filters-card">
+                <h3>🔍 Filtros</h3>
+                
+                <div class="filter-group">
+                    <label>Região:</label>
+                    <select id="regiao-select" class="filter-select">
+                        <option value="Vendas_Global">Global</option>
+                        <option value="Vendas_EUA">América do Norte</option>
+                        <option value="Vendas_Europa">Europa</option>
+                        <option value="Vendas_Japão">Japão</option>
+                        <option value="Vendas_Outros">Resto do Mundo</option>
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Ano:</label>
+                    <select id="ano-select" class="filter-select" multiple>
+                        <!-- Populado via JavaScript -->
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Plataforma:</label>
+                    <select id="plataforma-select" class="filter-select" multiple>
+                        <!-- Populado via JavaScript -->
+                    </select>
+                </div>
+
+                <div class="filter-group">
+                    <label>Gênero:</label>
+                    <select id="genero-select" class="filter-select" multiple>
+                        <!-- Populado via JavaScript -->
+                    </select>
+                </div>
+
+                <button onclick="aplicarFiltros()" class="filter-btn">Aplicar Filtros</button>
+                <button onclick="limparFiltros()" class="filter-btn secondary">Limpar Filtros</button>
+            </div>
+        </div>
+
+        <!-- Conteúdo Principal -->
+        <div class="main-content">
+            <!-- Métricas -->
+            <div class="section">
+                <h2>📊 Métricas Gerais</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">📅</div>
+                        <div class="metric-content">
+                            <h3>Ano com mais lançamentos</h3>
+                            <p id="metric-ano">-</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🎮</div>
+                        <div class="metric-content">
+                            <h3>Total no ano de pico</h3>
+                            <p id="metric-total">-</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🎯</div>
+                        <div class="metric-content">
+                            <h3>Gênero mais vendido</h3>
+                            <p id="metric-genero">-</p>
+                        </div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🕹️</div>
+                        <div class="metric-content">
+                            <h3>Plataforma líder</h3>
+                            <p id="metric-plataforma">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos -->
+            <div class="section">
+                <h2>📈 Análise de Vendas</h2>
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3>🕹️ Vendas por Plataforma</h3>
+                        <div id="chart-plataforma" class="chart-container"></div>
+                    </div>
+                    <div class="chart-card">
+                        <h3>📅 Vendas por Ano</h3>
+                        <div id="chart-ano" class="chart-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Franquias -->
+            <div class="section">
+                <h2>🎯 Franquias Mais Lucrativas</h2>
+                <div class="chart-card full-width">
+                    <div id="chart-franquias" class="chart-container"></div>
+                </div>
+            </div>
+
+            <!-- Tabela de Dados -->
+            <div class="section">
+                <h2>📋 Dados Filtrados</h2>
+                <div class="data-card">
+                    <div id="tabela-dados"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="loading">
+        <div class="loading-spinner"></div>
+        <p>Carregando dados...</p>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
