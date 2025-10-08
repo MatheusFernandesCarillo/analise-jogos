@@ -439,4 +439,296 @@ function atualizarDetalhesFranquia() {
     
     const layout = {
         title: `Top 10 Jogos - ${franquiaSelecionada} (${getNomeRegiao(regiao)})`,
-        paper_bgcolor: 'rg
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#f0f0f0' },
+        xaxis: { tickangle: 45, gridcolor: '#374151' },
+        yaxis: { title: 'Vendas (Milhões USD)', gridcolor: '#374151' },
+        margin: { t: 50, r: 30, b: 150, l: 60 }
+    };
+    
+    Plotly.react('chart-detalhes-franquia', [trace], layout);
+    
+    // Estatísticas da franquia
+    const totalJogos = jogosFranquia.length;
+    const vendasTotais = jogosFranquia.reduce((sum, jogo) => sum + jogo[regiao], 0);
+    const anoPrimeiro = Math.min(...jogosFranquia.map(jogo => jogo.Lançamento));
+    const anoUltimo = Math.max(...jogosFranquia.map(jogo => jogo.Lançamento));
+    const vendasMedias = vendasTotais / totalJogos;
+    
+    const statsHtml = `
+        <h4>Estatísticas da franquia ${franquiaSelecionada}:</h4>
+        <p><strong>Total de jogos:</strong> ${totalJogos}</p>
+        <p><strong>Período:</strong> ${anoPrimeiro} - ${anoUltimo}</p>
+        <p><strong>Vendas totais:</strong> $${vendasTotais.toFixed(2)}M</p>
+        <p><strong>Vendas médias por jogo:</strong> $${vendasMedias.toFixed(2)}M</p>
+    `;
+    
+    document.getElementById('estatisticas-franquia').innerHTML = statsHtml;
+    document.getElementById('titulo-franquia').textContent = `Detalhes da Franquia: ${franquiaSelecionada}`;
+    document.getElementById('detalhes-franquia').style.display = 'block';
+}
+
+// ANÁLISE REGIONAL
+function atualizarAnaliseRegional() {
+    const generoSelecionado = document.getElementById('genero-regional-select').value;
+    const regiaoComparacao = document.getElementById('regiao-comparacao-select').value;
+    const dados = dadosFiltrados.length > 0 ? dadosFiltrados : dadosCompletos;
+    
+    if (!generoSelecionado) {
+        alert('Por favor, selecione um gênero para análise.');
+        return;
+    }
+    
+    const regioesComparacao = {
+        'América do Norte': 'Vendas_EUA',
+        'Europa': 'Vendas_Europa', 
+        'Japão': 'Vendas_Japão',
+        'Resto do Mundo': 'Vendas_Outros',
+        'Global': 'Vendas_Global'
+    };
+    
+    // 1. Participação do gênero na região selecionada
+    const vendasRegiao = {};
+    dados.forEach(jogo => {
+        vendasRegiao[jogo.Genero] = (vendasRegiao[jogo.Genero] || 0) + jogo[regiaoComparacao];
+    });
+    
+    const totalVendasRegiao = Object.values(vendasRegiao).reduce((a, b) => a + b, 0);
+    const participacaoGenero = totalVendasRegiao > 0 ? 
+        (vendasRegiao[generoSelecionado] / totalVendasRegiao) * 100 : 0;
+
+    // 2. Comparação com outras regiões
+    const participacoes = {};
+    const rankings = {};
+    
+    for (const [regiaoNome, regiaoCol] of Object.entries(regioesComparacao)) {
+        const vendasTemp = {};
+        dados.forEach(jogo => {
+            vendasTemp[jogo.Genero] = (vendasTemp[jogo.Genero] || 0) + jogo[regiaoCol];
+        });
+        
+        const totalTemp = Object.values(vendasTemp).reduce((a, b) => a + b, 0);
+        participacoes[regiaoNome] = totalTemp > 0 ? (vendasTemp[generoSelecionado] / totalTemp) * 100 : 0;
+        
+        // Ranking
+        const generosOrdenados = Object.entries(vendasTemp)
+            .sort((a, b) => b[1] - a[1])
+            .map(([g]) => g);
+        rankings[regiaoNome] = generosOrdenados.indexOf(generoSelecionado) + 1;
+    }
+
+    // Atualizar métricas regionais
+    atualizarMetricasRegionais(participacaoGenero, rankings[getNomeRegiao(regiaoComparacao)], participacoes);
+
+    // Gráfico de comparação entre regiões
+    const dfComparacao = Object.entries(participacoes).map(([regiao, participacao]) => ({
+        Região: regiao,
+        Participação: participacao,
+        Ranking: rankings[regiao]
+    }));
+
+    const traceComparacao = {
+        x: dfComparacao.map(d => d.Região),
+        y: dfComparacao.map(d => d.Participação),
+        type: 'bar',
+        marker: {
+            color: dfComparacao.map(d => 
+                d.Região === getNomeRegiao(regiaoComparacao) ? '#FF6B00' : '#1f77b4'
+            )
+        },
+        hovertemplate: '<b>%{x}</b><br>Participação: %{y:.1f}%<br>Rank: #%{customdata}<extra></extra>',
+        customdata: dfComparacao.map(d => d.Ranking)
+    };
+
+    const layoutComparacao = {
+        title: `Participação de ${generoSelecionado} por Região (%)`,
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#f0f0f0' },
+        xaxis: { title: '', gridcolor: '#374151' },
+        yaxis: { title: 'Participação (%)', gridcolor: '#374151' },
+        margin: { t: 50, r: 30, b: 60, l: 60 }
+    };
+
+    Plotly.react('chart-comparacao-regional', [traceComparacao], layoutComparacao);
+
+    // Evolução temporal
+    const evolucao = {};
+    dados
+        .filter(jogo => jogo.Genero === generoSelecionado)
+        .forEach(jogo => {
+            evolucao[jogo.Lançamento] = (evolucao[jogo.Lançamento] || 0) + jogo[regiaoComparacao];
+        });
+
+    const evolucaoOrdenada = Object.entries(evolucao).sort((a, b) => a[0] - b[0]);
+
+    const traceEvolucao = {
+        x: evolucaoOrdenada.map(([ano]) => ano),
+        y: evolucaoOrdenada.map(([, vendas]) => vendas),
+        type: 'scatter',
+        mode: 'lines+markers',
+        line: { color: '#bb86fc', width: 3 },
+        marker: { color: '#bb86fc', size: 6 },
+        hovertemplate: 'Ano: %{x}<br>Vendas: %{y:.2f}M<extra></extra>'
+    };
+
+    const layoutEvolucao = {
+        title: `Evolução de ${generoSelecionado} em ${getNomeRegiao(regiaoComparacao)}`,
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#f0f0f0' },
+        xaxis: { title: 'Ano', gridcolor: '#374151' },
+        yaxis: { title: 'Vendas (Milhões USD)', gridcolor: '#374151' },
+        margin: { t: 50, r: 30, b: 60, l: 60 }
+    };
+
+    Plotly.react('chart-evolucao-regional', [traceEvolucao], layoutEvolucao);
+
+    // Comparação com outros gêneros
+    const vendasPorGenero = Object.entries(vendasRegiao)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 8);
+
+    const traceGeneros = {
+        x: vendasPorGenero.map(([genero]) => genero),
+        y: vendasPorGenero.map(([, vendas]) => (vendas / totalVendasRegiao) * 100),
+        type: 'bar',
+        marker: {
+            color: vendasPorGenero.map(([genero]) => 
+                genero === generoSelecionado ? '#FF6B00' : '#1f77b4'
+            )
+        },
+        hovertemplate: '<b>%{x}</b><br>Participação: %{y:.1f}%<extra></extra>'
+    };
+
+    const layoutGeneros = {
+        title: 'Participação dos Gêneros (%)',
+        paper_bgcolor: 'rgba(0,0,0,0)',
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        font: { color: '#f0f0f0' },
+        xaxis: { tickangle: 45, gridcolor: '#374151' },
+        yaxis: { title: 'Participação (%)', gridcolor: '#374151' },
+        margin: { t: 50, r: 30, b: 80, l: 60 }
+    };
+
+    Plotly.react('chart-comparacao-generos', [traceGeneros], layoutGeneros);
+
+    // Top 5 jogos do gênero
+    const topJogos = dados
+        .filter(jogo => jogo.Genero === generoSelecionado)
+        .sort((a, b) => b[regiaoComparacao] - a[regiaoComparacao])
+        .slice(0, 5)
+        .map(jogo => ({
+            Jogo: jogo.Nome,
+            Plataforma: jogo.Plataforma,
+            Ano: jogo.Lançamento,
+            Vendas: `$${jogo[regiaoComparacao].toFixed(2)}M`
+        }));
+
+    let tabelaHtml = `
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Jogo</th>
+                    <th>Plataforma</th>
+                    <th>Ano</th>
+                    <th>Vendas</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+    topJogos.forEach(jogo => {
+        tabelaHtml += `
+            <tr>
+                <td>${jogo.Jogo}</td>
+                <td>${jogo.Plataforma}</td>
+                <td>${jogo.Ano}</td>
+                <td>${jogo.Vendas}</td>
+            </tr>
+        `;
+    });
+
+    tabelaHtml += `
+            </tbody>
+        </table>
+    `;
+
+    document.getElementById('tabela-top-jogos').innerHTML = tabelaHtml;
+}
+
+function atualizarMetricasRegionais(participacao, ranking, participacoes) {
+    const metricsContainer = document.getElementById('regional-metrics');
+    
+    // Região onde o gênero é mais popular
+    const regiaoMaisPopular = Object.entries(participacoes).reduce((a, b) => a[1] > b[1] ? a : b)[0];
+    const diferencaMais = participacoes[regiaoMaisPopular] - participacao;
+    
+    // Região onde o gênero é menos popular
+    const regiaoMenosPopular = Object.entries(participacoes).reduce((a, b) => a[1] < b[1] ? a : b)[0];
+    const diferencaMenos = participacao - participacoes[regiaoMenosPopular];
+
+    const html = `
+        <div class="metric-card">
+            <div class="metric-content">
+                <h3>Participação</h3>
+                <p class="value">${participacao.toFixed(1)}%</p>
+                <p class="rank">Rank: #${ranking}</p>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-content">
+                <h3>Mais Popular em</h3>
+                <p class="value">${regiaoMaisPopular}</p>
+                <p class="rank">${regiaoMaisPopular !== getNomeRegiao(document.getElementById('regiao-comparacao-select').value) ? `+${diferencaMais.toFixed(1)}%` : '🏆'}</p>
+            </div>
+        </div>
+        <div class="metric-card">
+            <div class="metric-content">
+                <h3>Menos Popular em</h3>
+                <p class="value">${regiaoMenosPopular}</p>
+                <p class="rank">${regiaoMenosPopular !== getNomeRegiao(document.getElementById('regiao-comparacao-select').value) ? `-${diferencaMenos.toFixed(1)}%` : '⬇️'}</p>
+            </div>
+        </div>
+    `;
+
+    metricsContainer.innerHTML = html;
+}
+
+// Funções auxiliares
+function getNomeRegiao(regiao) {
+    const regioes = {
+        'Vendas_Global': 'Global',
+        'Vendas_EUA': 'América do Norte',
+        'Vendas_Europa': 'Europa',
+        'Vendas_Japão': 'Japão',
+        'Vendas_Outros': 'Resto do Mundo'
+    };
+    return regioes[regiao];
+}
+
+function getCorFranquia(franquia) {
+    const cores = {
+        'Call of Duty': '#FF6B00',
+        'FIFA': '#009688', 
+        'Mario': '#E91E63',
+        'Pokémon': '#FFC107',
+        'Grand Theft Auto': '#4CAF50',
+        'The Sims': '#9C27B0',
+        'Need for Speed': '#FF9800',
+        'Assassin': '#795548',
+        'Final Fantasy': '#3F51B5',
+        'Halo': '#00BCD4'
+    };
+    return cores[franquia] || '#2196F3';
+}
+
+function mostrarLoading(mostrar) {
+    document.getElementById('loading').style.display = mostrar ? 'flex' : 'none';
+}
+
+// Event listeners
+document.getElementById('regiao-select').addEventListener('change', function() {
+    atualizarDashboard();
+});
