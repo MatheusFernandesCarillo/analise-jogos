@@ -466,7 +466,6 @@ function atualizarDetalhesFranquia() {
     
     document.getElementById('estatisticas-franquia').innerHTML = statsHtml;
     document.getElementById('titulo-franquia').textContent = `Detalhes da Franquia: ${franquiaSelecionada}`;
-    document.getElementById('detalhes-franquia').style.display = 'block';
 }
 
 // ANÁLISE REGIONAL
@@ -736,3 +735,4 @@ function mostrarLoading(mostrar) {
 document.getElementById('regiao-select').addEventListener('change', function() {
     atualizarDashboard();
 });
+
