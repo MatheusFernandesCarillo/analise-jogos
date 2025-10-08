@@ -1,8 +1,6 @@
 // Variáveis globais
 let dadosCompletos = [];
 let dadosFiltrados = [];
-let analiseFranquiasAtiva = false;
-let analiseRegionalAtiva = false;
 
 // Inicialização
 document.addEventListener('DOMContentLoaded', function() {
@@ -30,6 +28,7 @@ async function carregarDados() {
         
         popularFiltros();
         atualizarDashboard();
+        inicializarAnalises();
         mostrarLoading(false);
     } catch (error) {
         console.error('Erro ao carregar dados:', error);
@@ -53,12 +52,15 @@ function parseCSV(csvText) {
             }
         });
         return obj;
-    }).filter(obj => obj.Nome && obj.Lançamento);
+    }).filter(obj => obj.Nome && obj.Lançamento && obj.Lançamento !== 3); // FILTRA ANO 3
 }
 
 function popularFiltros() {
-    // Anos
-    const anos = [...new Set(dadosCompletos.map(d => d.Lançamento))].sort((a, b) => a - b);
+    // Anos (filtra ano 3)
+    const anos = [...new Set(dadosCompletos.map(d => d.Lançamento))]
+        .filter(ano => ano !== 3) // REMOVE ANO 3
+        .sort((a, b) => a - b);
+    
     const anoSelect = $('#ano-select');
     anos.forEach(ano => {
         const option = new Option(ano, ano, false, false);
@@ -127,13 +129,15 @@ function atualizarDashboard() {
     atualizarGraficos(regiao);
     atualizarTabela();
     
-    // Atualizar análises se estiverem ativas
-    if (analiseFranquiasAtiva) {
-        atualizarAnaliseFranquias(regiao);
-    }
-    if (analiseRegionalAtiva) {
-        atualizarAnaliseRegional();
-    }
+    // SEMPRE atualizar as análises
+    atualizarAnaliseFranquias(regiao);
+    atualizarAnaliseRegional();
+}
+
+function inicializarAnalises() {
+    const regiao = document.getElementById('regiao-select').value;
+    atualizarAnaliseFranquias(regiao);
+    atualizarAnaliseRegional();
 }
 
 function atualizarMetricas(regiao) {
@@ -142,7 +146,9 @@ function atualizarMetricas(regiao) {
     // Ano com mais lançamentos
     const jogosPorAno = {};
     dados.forEach(jogo => {
-        jogosPorAno[jogo.Lançamento] = (jogosPorAno[jogo.Lançamento] || 0) + 1;
+        if (jogo.Lançamento !== 3) { // Filtra ano 3
+            jogosPorAno[jogo.Lançamento] = (jogosPorAno[jogo.Lançamento] || 0) + 1;
+        }
     });
     const anoTop = Object.entries(jogosPorAno).reduce((a, b) => a[1] > b[1] ? a : b, ['-', 0]);
     document.getElementById('metric-ano').textContent = anoTop[0];
@@ -206,10 +212,14 @@ function atualizarGraficoPlataformas(dados, regiao) {
 function atualizarGraficoAnos(dados, regiao) {
     const vendasAno = {};
     dados.forEach(jogo => {
-        vendasAno[jogo.Lançamento] = (vendasAno[jogo.Lançamento] || 0) + jogo[regiao];
+        if (jogo.Lançamento !== 3) { // FILTRA ANO 3
+            vendasAno[jogo.Lançamento] = (vendasAno[jogo.Lançamento] || 0) + jogo[regiao];
+        }
     });
     
-    const anosOrdenados = Object.entries(vendasAno).sort((a, b) => a[0] - b[0]);
+    const anosOrdenados = Object.entries(vendasAno)
+        .filter(([ano]) => ano !== '3') // FILTRA ANO 3
+        .sort((a, b) => a[0] - b[0]);
     
     const trace = {
         x: anosOrdenados.map(a => a[0]),
@@ -237,6 +247,18 @@ function atualizarGraficoAnos(dados, regiao) {
 function atualizarTabela() {
     const dados = dadosFiltrados.length > 0 ? dadosFiltrados.slice(0, 50) : dadosCompletos.slice(0, 50);
     
+    console.log('Dados para tabela:', dados.length, 'registros');
+    
+    if (dados.length === 0) {
+        document.getElementById('tabela-dados').innerHTML = `
+            <div class="no-data">
+                <div class="icon">📭</div>
+                <p>Nenhum dado encontrado com os filtros aplicados</p>
+            </div>
+        `;
+        return;
+    }
+    
     let html = `
         <div class="table-info">
             <p>Mostrando ${dados.length} de ${dadosFiltrados.length} jogos</p>
@@ -248,6 +270,7 @@ function atualizarTabela() {
                     <th>Plataforma</th>
                     <th>Ano</th>
                     <th>Gênero</th>
+                    <th>Publicadora</th>
                     <th>Vendas Global</th>
                 </tr>
             </thead>
@@ -255,13 +278,21 @@ function atualizarTabela() {
     `;
     
     dados.forEach(jogo => {
+        const nome = jogo.Nome || '-';
+        const plataforma = jogo.Plataforma || '-';
+        const ano = jogo.Lançamento || '-';
+        const genero = jogo.Genero || '-';
+        const publicadora = jogo.Publicadora || '-';
+        const vendas = jogo.Vendas_Global ? `$${jogo.Vendas_Global.toFixed(2)}M` : '$0.00M';
+        
         html += `
             <tr>
-                <td>${jogo.Nome || '-'}</td>
-                <td>${jogo.Plataforma || '-'}</td>
-                <td>${jogo.Lançamento || '-'}</td>
-                <td>${jogo.Genero || '-'}</td>
-                <td>$${(jogo.Vendas_Global || 0).toFixed(2)}M</td>
+                <td title="${nome}">${nome.length > 30 ? nome.substring(0, 30) + '...' : nome}</td>
+                <td>${plataforma}</td>
+                <td>${ano}</td>
+                <td>${genero}</td>
+                <td title="${publicadora}">${publicadora.length > 20 ? publicadora.substring(0, 20) + '...' : publicadora}</td>
+                <td style="text-align: right; font-weight: 600;">${vendas}</td>
             </tr>
         `;
     });
@@ -275,37 +306,6 @@ function atualizarTabela() {
 }
 
 // ANÁLISE DE FRANQUIAS
-function toggleSection(tipo) {
-    if (tipo === 'franquia') {
-        analiseFranquiasAtiva = !analiseFranquiasAtiva;
-        const content = document.getElementById('franquia-content');
-        const filters = document.getElementById('franquia-filters');
-        
-        if (analiseFranquiasAtiva) {
-            content.style.display = 'block';
-            filters.style.display = 'block';
-            atualizarAnaliseFranquias(document.getElementById('regiao-select').value);
-        } else {
-            content.style.display = 'none';
-            filters.style.display = 'none';
-            document.getElementById('detalhes-franquia').style.display = 'none';
-        }
-    } else if (tipo === 'regional') {
-        analiseRegionalAtiva = !analiseRegionalAtiva;
-        const content = document.getElementById('regional-content');
-        const filters = document.getElementById('regional-filters');
-        
-        if (analiseRegionalAtiva) {
-            content.style.display = 'block';
-            filters.style.display = 'block';
-            atualizarAnaliseRegional();
-        } else {
-            content.style.display = 'none';
-            filters.style.display = 'none';
-        }
-    }
-}
-
 function atualizarAnaliseFranquias(regiao) {
     const dados = dadosFiltrados.length > 0 ? dadosFiltrados : dadosCompletos;
     const franquiasConhecidas = ['Call of Duty', 'FIFA', 'Mario', 'Pokémon', 'Grand Theft Auto', 
@@ -558,10 +558,14 @@ function atualizarAnaliseRegional() {
     dados
         .filter(jogo => jogo.Genero === generoSelecionado)
         .forEach(jogo => {
-            evolucao[jogo.Lançamento] = (evolucao[jogo.Lançamento] || 0) + jogo[regiaoComparacao];
+            if (jogo.Lançamento !== 3) { // Filtra ano 3
+                evolucao[jogo.Lançamento] = (evolucao[jogo.Lançamento] || 0) + jogo[regiaoComparacao];
+            }
         });
 
-    const evolucaoOrdenada = Object.entries(evolucao).sort((a, b) => a[0] - b[0]);
+    const evolucaoOrdenada = Object.entries(evolucao)
+        .filter(([ano]) => ano !== '3') // Filtra ano 3
+        .sort((a, b) => a[0] - b[0]);
 
     const traceEvolucao = {
         x: evolucaoOrdenada.map(([ano]) => ano),
@@ -645,7 +649,7 @@ function atualizarAnaliseRegional() {
                 <td>${jogo.Jogo}</td>
                 <td>${jogo.Plataforma}</td>
                 <td>${jogo.Ano}</td>
-                <td>${jogo.Vendas}</td>
+                <td style="text-align: right; font-weight: 600;">${jogo.Vendas}</td>
             </tr>
         `;
     });
