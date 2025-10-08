@@ -282,35 +282,94 @@ header p {
     border-radius: 12px;
     border: 1px solid var(--surface-light);
     overflow-x: auto;
+    margin-top: 1rem;
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 1rem;
-}
-
-.data-table th,
-.data-table td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid var(--surface-light);
+    font-size: 0.9rem;
+    background: var(--surface);
 }
 
 .data-table th {
     background: var(--surface-light);
     color: var(--accent);
     font-weight: 600;
+    padding: 1rem 0.75rem;
+    text-align: left;
+    border-bottom: 2px solid var(--primary);
+    position: sticky;
+    top: 0;
+}
+
+.data-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--surface-light);
+    color: var(--text);
 }
 
 .data-table tr:hover {
     background: var(--surface-light);
+    transition: background 0.2s ease;
+}
+
+.data-table tr:nth-child(even) {
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.data-table tr:nth-child(even):hover {
+    background: var(--surface-light);
+}
+
+.data-table td:last-child {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--secondary);
+}
+
+.data-card::-webkit-scrollbar {
+    height: 8px;
+}
+
+.data-card::-webkit-scrollbar-track {
+    background: var(--surface);
+    border-radius: 4px;
+}
+
+.data-card::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.data-card::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
 }
 
 .table-info {
     margin-bottom: 1rem;
     color: var(--text-secondary);
     font-size: 0.9rem;
+    padding: 0.5rem;
+    background: var(--surface-light);
+    border-radius: 6px;
+    border-left: 4px solid var(--primary);
+}
+
+.no-data {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.no-data .icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
 }
 
 /* Franchise Metrics */
@@ -372,7 +431,7 @@ header p {
     100% { transform: rotate(360deg); }
 }
 
-/* SELECT2 CUSTOMIZATION - CORREÇÃO DOS FILTROS */
+/* SELECT2 CUSTOMIZATION */
 .select2-container--default .select2-selection--multiple,
 .select2-container--default .select2-selection--single {
     background: var(--surface-light) !important;
@@ -426,7 +485,6 @@ header p {
     border-color: var(--text) transparent transparent transparent !important;
 }
 
-/* Dropdown dos selects */
 .select2-container--default .select2-results__option {
     background: var(--surface-light) !important;
     color: var(--text) !important;
@@ -450,7 +508,6 @@ header p {
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
 }
 
-/* Placeholder visível */
 .select2-container--default .select2-selection--multiple .select2-selection__placeholder {
     color: var(--text-secondary) !important;
     opacity: 0.7 !important;
@@ -463,7 +520,6 @@ header p {
     font-weight: 500;
 }
 
-/* Search field dentro do dropdown */
 .select2-container--default .select2-search--dropdown .select2-search__field {
     background: var(--surface) !important;
     color: var(--text) !important;
@@ -474,7 +530,6 @@ header p {
     width: calc(100% - 16px) !important;
 }
 
-/* Quando o select está focado */
 .select2-container--default.select2-container--focus .select2-selection--multiple,
 .select2-container--default.select2-container--focus .select2-selection--single {
     border-color: var(--primary) !important;
@@ -482,7 +537,6 @@ header p {
     box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
 }
 
-/* Scrollbar do dropdown */
 .select2-results__options::-webkit-scrollbar {
     width: 8px;
 }
@@ -500,14 +554,12 @@ header p {
     background: var(--primary-dark);
 }
 
-/* Loading state para os selects */
 .select2-container--disabled .select2-selection--multiple,
 .select2-container--disabled .select2-selection--single {
     opacity: 0.6;
     background: var(--surface) !important;
 }
 
-/* Indicador de múltipla seleção */
 .select2-container--default .select2-selection--multiple .select2-selection__clear {
     color: var(--text-secondary) !important;
     margin-right: 5px;
@@ -515,6 +567,51 @@ header p {
 
 .select2-container--default .select2-selection--multiple .select2-selection__clear:hover {
     color: var(--error) !important;
+}
+
+/* ESTILOS PARA O SELETOR DE FRANQUIA */
+.franquia-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.franquia-selector {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.franquia-selector .filter-select {
+    min-width: 200px;
+    background: var(--surface-light);
+    color: var(--text);
+    border: 1px solid #4a5568;
+    border-radius: 8px;
+    padding: 0.5rem;
+}
+
+.franquia-selector .filter-btn {
+    width: auto;
+    padding: 0.5rem 1.5rem;
+    margin: 0;
+}
+
+.initial-message {
+    text-align: center;
+    padding: 3rem 2rem;
+    color: var(--text-secondary);
+    background: var(--surface-light);
+    border-radius: 8px;
+    border: 2px dashed var(--surface-light);
+}
+
+.initial-message p {
+    margin: 0;
+    font-size: 1.1rem;
 }
 
 /* Responsive */
@@ -536,14 +633,16 @@ header p {
         grid-template-columns: 1fr;
     }
     
-    .section-header {
+    .franquia-header {
         flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
+        align-items: stretch;
     }
     
-    .toggle-btn {
-        align-self: flex-end;
+    .franquia-selector {
+        flex-direction: column;
+    }
+    
+    .franquia-selector .filter-select {
+        min-width: auto;
     }
 }
-
