@@ -67,6 +67,7 @@ header p {
     border-radius: 12px;
     border: 1px solid var(--surface-light);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);
+    margin-bottom: 1.5rem;
 }
 
 .filters-card h3 {
@@ -74,6 +75,8 @@ header p {
     color: var(--secondary);
     font-size: 1.2rem;
     text-align: center;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 0.5rem;
 }
 
 .filter-group {
@@ -86,6 +89,8 @@ header p {
     font-weight: 600;
     color: var(--accent);
     font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .filter-select {
@@ -114,6 +119,8 @@ header p {
     font-weight: 600;
     font-size: 0.9rem;
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .filter-btn:hover {
@@ -128,6 +135,7 @@ header p {
 
 .filter-btn.secondary:hover {
     background: #4a5568;
+    color: var(--text);
 }
 
 /* Main Content */
@@ -147,6 +155,21 @@ header p {
     font-size: 1.5rem;
     border-left: 4px solid var(--accent);
     padding-left: 1rem;
+}
+
+/* Region Info */
+.region-info {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.region-info h2 {
+    color: white;
+    margin: 0;
+    font-size: 1.3rem;
 }
 
 /* Metrics */
@@ -195,6 +218,38 @@ header p {
     color: var(--secondary);
 }
 
+/* Divider */
+.divider {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--surface-light), transparent);
+    margin: 3rem 0;
+    border: none;
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.toggle-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: var(--primary-dark);
+    transform: translateY(-2px);
+}
+
 /* Charts */
 .charts-grid {
     display: grid;
@@ -225,6 +280,25 @@ header p {
     width: 100%;
 }
 
+/* Stats Container */
+.stats-container {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background: var(--surface-light);
+    border-radius: 8px;
+    border-left: 4px solid var(--accent);
+}
+
+.stats-container h4 {
+    color: var(--accent);
+    margin-bottom: 0.5rem;
+}
+
+.stats-container p {
+    margin: 0.25rem 0;
+    color: var(--text-secondary);
+}
+
 /* Data Table */
 .data-card {
     background: var(--surface);
@@ -232,6 +306,59 @@ header p {
     border-radius: 12px;
     border: 1px solid var(--surface-light);
     overflow-x: auto;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.data-table th,
+.data-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--surface-light);
+}
+
+.data-table th {
+    background: var(--surface-light);
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.data-table tr:hover {
+    background: var(--surface-light);
+}
+
+.table-info {
+    margin-bottom: 1rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Franchise Metrics */
+.franchise-metric {
+    text-align: center;
+    padding: 1rem;
+}
+
+.franchise-metric h4 {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.franchise-metric .value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--secondary);
+}
+
+.franchise-metric .rank {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
 }
 
 /* Loading */
@@ -269,12 +396,14 @@ header p {
     100% { transform: rotate(360deg); }
 }
 
-/* Select2 Customization */
-.select2-container--default .select2-selection--multiple {
+/* SELECT2 CUSTOMIZATION - CORREÇÃO DOS FILTROS */
+.select2-container--default .select2-selection--multiple,
+.select2-container--default .select2-selection--single {
     background: var(--surface-light) !important;
     border: 1px solid #4a5568 !important;
     border-radius: 8px !important;
     color: var(--text) !important;
+    min-height: 42px;
 }
 
 .select2-container--default .select2-selection--multiple .select2-selection__choice {
@@ -282,10 +411,134 @@ header p {
     border: none !important;
     border-radius: 6px !important;
     color: white !important;
+    padding: 2px 8px !important;
+    margin: 4px 4px 0 0 !important;
+    font-weight: 500;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: white !important;
+    margin-right: 4px !important;
+    border: none !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
+    background: transparent !important;
+    color: #ffeb3b !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered {
+    padding: 4px 8px !important;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__rendered li {
+    color: white !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--text) !important;
+    line-height: 40px !important;
+    padding: 0 12px !important;
+    font-weight: 500;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 40px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow b {
+    border-color: var(--text) transparent transparent transparent !important;
+}
+
+/* Dropdown dos selects */
+.select2-container--default .select2-results__option {
+    background: var(--surface-light) !important;
+    color: var(--text) !important;
+    padding: 8px 12px !important;
 }
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
     background: var(--primary) !important;
+    color: white !important;
+}
+
+.select2-container--default .select2-results__option[aria-selected=true] {
+    background: var(--surface) !important;
+    color: var(--accent) !important;
+}
+
+.select2-dropdown {
+    background: var(--surface-light) !important;
+    border: 1px solid #4a5568 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+}
+
+/* Placeholder visível */
+.select2-container--default .select2-selection--multiple .select2-selection__placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.7 !important;
+    font-weight: 500;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: var(--text-secondary) !important;
+    opacity: 0.7 !important;
+    font-weight: 500;
+}
+
+/* Search field dentro do dropdown */
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    background: var(--surface) !important;
+    color: var(--text) !important;
+    border: 1px solid #4a5568 !important;
+    border-radius: 4px !important;
+    padding: 6px !important;
+    margin: 8px;
+    width: calc(100% - 16px) !important;
+}
+
+/* Quando o select está focado */
+.select2-container--default.select2-container--focus .select2-selection--multiple,
+.select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: var(--primary) !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2) !important;
+}
+
+/* Scrollbar do dropdown */
+.select2-results__options::-webkit-scrollbar {
+    width: 8px;
+}
+
+.select2-results__options::-webkit-scrollbar-track {
+    background: var(--surface);
+}
+
+.select2-results__options::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 4px;
+}
+
+.select2-results__options::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Loading state para os selects */
+.select2-container--disabled .select2-selection--multiple,
+.select2-container--disabled .select2-selection--single {
+    opacity: 0.6;
+    background: var(--surface) !important;
+}
+
+/* Indicador de múltipla seleção */
+.select2-container--default .select2-selection--multiple .select2-selection__clear {
+    color: var(--text-secondary) !important;
+    margin-right: 5px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__clear:hover {
+    color: var(--error) !important;
 }
 
 /* Responsive */
@@ -305,5 +558,15 @@ header p {
     
     .metrics-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+    }
+    
+    .toggle-btn {
+        align-self: flex-end;
     }
 }
