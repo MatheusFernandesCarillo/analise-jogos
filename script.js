@@ -1,8 +1,6 @@
-// Variáveis globais
 let dadosCompletos = [];
 let dadosFiltrados = [];
 
-// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     inicializarSelect2();
     carregarDados();
@@ -16,7 +14,6 @@ function inicializarSelect2() {
         theme: 'default'
     });
     
-    // Inicializar também o select de franquia
     $('#franquia-select').select2({
         placeholder: 'Selecione uma franquia...',
         allowClear: false,
@@ -38,7 +35,6 @@ async function carregarDados() {
         atualizarDashboard();
         inicializarAnalises();
         
-        // FORÇAR A ANÁLISE DE FRANQUIAS
         const regiao = document.getElementById('regiao-select').value;
         atualizarAnaliseFranquias(regiao);
         
@@ -69,9 +65,8 @@ function parseCSV(csvText) {
 }
 
 function popularFiltros() {
-    // Anos (filtra ano 3)
     const anos = [...new Set(dadosCompletos.map(d => d.Lançamento))]
-        .filter(ano => ano !== 3) // REMOVE ANO 3
+        .filter(ano => ano !== 3) 
         .sort((a, b) => a - b);
     
     const anoSelect = $('#ano-select');
@@ -80,7 +75,6 @@ function popularFiltros() {
         anoSelect.append(option);
     });
 
-    // Plataformas
     const plataformas = [...new Set(dadosCompletos.map(d => d.Plataforma))].sort();
     const plataformaSelect = $('#plataforma-select');
     plataformas.forEach(plataforma => {
@@ -88,7 +82,6 @@ function popularFiltros() {
         plataformaSelect.append(option);
     });
 
-    // Gêneros
     const generos = [...new Set(dadosCompletos.map(d => d.Genero))].sort();
     const generoSelect = $('#genero-select');
     generos.forEach(genero => {
@@ -96,7 +89,6 @@ function popularFiltros() {
         generoSelect.append(option);
     });
 
-    // Gêneros para análise regional
     const generoRegionalSelect = $('#genero-regional-select');
     generos.forEach(genero => {
         const option = new Option(genero, genero, false, false);
@@ -142,7 +134,6 @@ function atualizarDashboard() {
     atualizarGraficos(regiao);
     atualizarTabela();
     
-    // SEMPRE atualizar as análises
     atualizarAnaliseFranquias(regiao);
     atualizarAnaliseRegional();
 }
@@ -156,10 +147,9 @@ function inicializarAnalises() {
 function atualizarMetricas(regiao) {
     const dados = dadosFiltrados.length > 0 ? dadosFiltrados : dadosCompletos;
     
-    // Ano com mais lançamentos
     const jogosPorAno = {};
     dados.forEach(jogo => {
-        if (jogo.Lançamento !== 3) { // Filtra ano 3
+        if (jogo.Lançamento !== 3)
             jogosPorAno[jogo.Lançamento] = (jogosPorAno[jogo.Lançamento] || 0) + 1;
         }
     });
@@ -167,7 +157,6 @@ function atualizarMetricas(regiao) {
     document.getElementById('metric-ano').textContent = anoTop[0];
     document.getElementById('metric-total').textContent = anoTop[1].toLocaleString();
 
-    // Gênero mais vendido
     const vendasPorGenero = {};
     dados.forEach(jogo => {
         vendasPorGenero[jogo.Genero] = (vendasPorGenero[jogo.Genero] || 0) + jogo[regiao];
@@ -175,7 +164,7 @@ function atualizarMetricas(regiao) {
     const generoTop = Object.entries(vendasPorGenero).reduce((a, b) => a[1] > b[1] ? a : b, ['-', 0]);
     document.getElementById('metric-genero').textContent = generoTop[0];
 
-    // Plataforma líder
+
     const vendasPorPlataforma = {};
     dados.forEach(jogo => {
         vendasPorPlataforma[jogo.Plataforma] = (vendasPorPlataforma[jogo.Plataforma] || 0) + jogo[regiao];
@@ -225,13 +214,13 @@ function atualizarGraficoPlataformas(dados, regiao) {
 function atualizarGraficoAnos(dados, regiao) {
     const vendasAno = {};
     dados.forEach(jogo => {
-        if (jogo.Lançamento !== 3) { // FILTRA ANO 3
+        if (jogo.Lançamento !== 3) { 
             vendasAno[jogo.Lançamento] = (vendasAno[jogo.Lançamento] || 0) + jogo[regiao];
         }
     });
     
     const anosOrdenados = Object.entries(vendasAno)
-        .filter(([ano]) => ano !== '3') // FILTRA ANO 3
+        .filter(([ano]) => ano !== '3')
         .sort((a, b) => a[0] - b[0]);
     
     const trace = {
@@ -318,7 +307,6 @@ function atualizarTabela() {
     document.getElementById('tabela-dados').innerHTML = html;
 }
 
-// ANÁLISE DE FRANQUIAS
 function atualizarAnaliseFranquias(regiao) {
     const dados = dadosFiltrados.length > 0 ? dadosFiltrados : dadosCompletos;
     const franquiasConhecidas = ['Call of Duty', 'FIFA', 'Mario', 'Pokémon', 'Grand Theft Auto', 
@@ -335,20 +323,17 @@ function atualizarAnaliseFranquias(regiao) {
         return 'Outras';
     }
 
-    // Calcular vendas por franquia
     const vendasFranquias = {};
     dados.forEach(jogo => {
         const franquia = identificarFranquia(jogo.Nome);
         vendasFranquias[franquia] = (vendasFranquias[franquia] || 0) + jogo[regiao];
     });
 
-    // Filtrar apenas franquias conhecidas e ordenar
     const franquiasPrincipais = Object.entries(vendasFranquias)
         .filter(([franquia]) => franquia !== 'Outras')
         .sort((a, b) => b[1] - a[1])
         .slice(0, 15);
 
-    // Gráfico de franquias
     const coresEspeciais = {
         'Call of Duty': '#FF6B00',
         'FIFA': '#009688', 
@@ -386,7 +371,6 @@ function atualizarAnaliseFranquias(regiao) {
 
     Plotly.react('chart-franquias', [trace], layout);
 
-    // Atualizar métricas das franquias
     atualizarMetricasFranquias(franquiasPrincipais, regiao);
 }
 
@@ -434,12 +418,10 @@ function atualizarDetalhesFranquia() {
         return;
     }
     
-    // Esconder mensagem inicial e mostrar gráfico/estatísticas
     document.getElementById('initial-message').style.display = 'none';
     document.getElementById('chart-detalhes-franquia').style.display = 'block';
     document.getElementById('estatisticas-franquia').style.display = 'block';
     
-    // Top 10 jogos da franquia
     const topJogos = jogosFranquia
         .sort((a, b) => b[regiao] - a[regiao])
         .slice(0, 10);
@@ -467,7 +449,6 @@ function atualizarDetalhesFranquia() {
     
     Plotly.react('chart-detalhes-franquia', [trace], layout);
     
-    // Estatísticas da franquia
     const totalJogos = jogosFranquia.length;
     const vendasTotais = jogosFranquia.reduce((sum, jogo) => sum + jogo[regiao], 0);
     const anoPrimeiro = Math.min(...jogosFranquia.map(jogo => jogo.Lançamento));
@@ -486,7 +467,6 @@ function atualizarDetalhesFranquia() {
     document.getElementById('titulo-franquia').textContent = `Detalhes da Franquia: ${franquiaSelecionada}`;
 }
 
-// ANÁLISE REGIONAL
 function atualizarAnaliseRegional() {
     const generoSelecionado = document.getElementById('genero-regional-select').value;
     const regiaoComparacao = document.getElementById('regiao-comparacao-select').value;
@@ -505,7 +485,6 @@ function atualizarAnaliseRegional() {
         'Global': 'Vendas_Global'
     };
     
-    // 1. Participação do gênero na região selecionada
     const vendasRegiao = {};
     dados.forEach(jogo => {
         vendasRegiao[jogo.Genero] = (vendasRegiao[jogo.Genero] || 0) + jogo[regiaoComparacao];
@@ -515,7 +494,6 @@ function atualizarAnaliseRegional() {
     const participacaoGenero = totalVendasRegiao > 0 ? 
         (vendasRegiao[generoSelecionado] / totalVendasRegiao) * 100 : 0;
 
-    // 2. Comparação com outras regiões
     const participacoes = {};
     const rankings = {};
     
@@ -535,10 +513,8 @@ function atualizarAnaliseRegional() {
         rankings[regiaoNome] = generosOrdenados.indexOf(generoSelecionado) + 1;
     }
 
-    // Atualizar métricas regionais
     atualizarMetricasRegionais(participacaoGenero, rankings[getNomeRegiao(regiaoComparacao)], participacoes);
 
-    // Gráfico de comparação entre regiões
     const dfComparacao = Object.entries(participacoes).map(([regiao, participacao]) => ({
         Região: regiao,
         Participação: participacao,
@@ -570,18 +546,17 @@ function atualizarAnaliseRegional() {
 
     Plotly.react('chart-comparacao-regional', [traceComparacao], layoutComparacao);
 
-    // Evolução temporal
     const evolucao = {};
     dados
         .filter(jogo => jogo.Genero === generoSelecionado)
         .forEach(jogo => {
-            if (jogo.Lançamento !== 3) { // Filtra ano 3
+            if (jogo.Lançamento !== 3) { 
                 evolucao[jogo.Lançamento] = (evolucao[jogo.Lançamento] || 0) + jogo[regiaoComparacao];
             }
         });
 
     const evolucaoOrdenada = Object.entries(evolucao)
-        .filter(([ano]) => ano !== '3') // Filtra ano 3
+        .filter(([ano]) => ano !== '3') 
         .sort((a, b) => a[0] - b[0]);
 
     const traceEvolucao = {
@@ -606,7 +581,6 @@ function atualizarAnaliseRegional() {
 
     Plotly.react('chart-evolucao-regional', [traceEvolucao], layoutEvolucao);
 
-    // Comparação com outros gêneros
     const vendasPorGenero = Object.entries(vendasRegiao)
         .sort((a, b) => b[1] - a[1])
         .slice(0, 8);
@@ -635,7 +609,6 @@ function atualizarAnaliseRegional() {
 
     Plotly.react('chart-comparacao-generos', [traceGeneros], layoutGeneros);
 
-    // Top 5 jogos do gênero
     const topJogos = dados
         .filter(jogo => jogo.Genero === generoSelecionado)
         .sort((a, b) => b[regiaoComparacao] - a[regiaoComparacao])
@@ -682,11 +655,9 @@ function atualizarAnaliseRegional() {
 function atualizarMetricasRegionais(participacao, ranking, participacoes) {
     const metricsContainer = document.getElementById('regional-metrics');
     
-    // Região onde o gênero é mais popular
     const regiaoMaisPopular = Object.entries(participacoes).reduce((a, b) => a[1] > b[1] ? a : b)[0];
     const diferencaMais = participacoes[regiaoMaisPopular] - participacao;
     
-    // Região onde o gênero é menos popular
     const regiaoMenosPopular = Object.entries(participacoes).reduce((a, b) => a[1] < b[1] ? a : b)[0];
     const diferencaMenos = participacao - participacoes[regiaoMenosPopular];
 
@@ -717,7 +688,6 @@ function atualizarMetricasRegionais(participacao, ranking, participacoes) {
     metricsContainer.innerHTML = html;
 }
 
-// Funções auxiliares
 function getNomeRegiao(regiao) {
     const regioes = {
         'Vendas_Global': 'Global',
@@ -749,7 +719,7 @@ function mostrarLoading(mostrar) {
     document.getElementById('loading').style.display = mostrar ? 'flex' : 'none';
 }
 
-// Event listeners
 document.getElementById('regiao-select').addEventListener('change', function() {
     atualizarDashboard();
 });
+
