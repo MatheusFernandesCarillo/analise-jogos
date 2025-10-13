@@ -1,6 +1,6 @@
 import pandas as pd
 
-url = "https://raw.githubusercontent.com/MatheusFernandesCarillo/jogos-analise/main/Video_Games_Sales_as_at_22_Dec_2016.csv"
+url = "https://raw.githubusercontent.com/MatheusFernandesCarillo/analise-jogos/refs/heads/main/data/Video_Games_Sales_as_at_22_Dec_2016.csv"
 df = pd.read_csv(url)
 
 df.columns = [
@@ -18,4 +18,5 @@ df_limpo = df_limpo.dropna(subset=['Genero'])
 
 
 df_limpo.to_csv('jogos_organizado.csv', index=False)
+
 print("Dados processados salvos!")
