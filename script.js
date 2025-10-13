@@ -149,7 +149,7 @@ function atualizarMetricas(regiao) {
     
     const jogosPorAno = {};
     dados.forEach(jogo => {
-        if (jogo.Lançamento !== 3)
+        if (jogo.Lançamento !== 3) {
             jogosPorAno[jogo.Lançamento] = (jogosPorAno[jogo.Lançamento] || 0) + 1;
         }
     });
@@ -722,4 +722,5 @@ function mostrarLoading(mostrar) {
 document.getElementById('regiao-select').addEventListener('change', function() {
     atualizarDashboard();
 });
+
 
