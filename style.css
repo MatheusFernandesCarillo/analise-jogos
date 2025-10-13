@@ -32,7 +32,6 @@ body {
     min-height: 100vh;
 }
 
-/* Header */
 header {
     grid-column: 1 / -1;
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
@@ -53,7 +52,6 @@ header p {
     opacity: 0.9;
 }
 
-/* Sidebar */
 .sidebar {
     background: var(--surface);
     padding: 1.5rem;
@@ -138,7 +136,6 @@ header p {
     color: var(--text);
 }
 
-/* Main Content */
 .main-content {
     padding: 2rem;
     overflow-y: auto;
@@ -157,7 +154,6 @@ header p {
     padding-left: 1rem;
 }
 
-/* Region Info */
 .region-info {
     background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
     padding: 1rem 2rem;
@@ -172,7 +168,6 @@ header p {
     font-size: 1.3rem;
 }
 
-/* Metrics */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -218,7 +213,6 @@ header p {
     color: var(--secondary);
 }
 
-/* Divider */
 .divider {
     height: 2px;
     background: linear-gradient(90deg, transparent, var(--surface-light), transparent);
@@ -226,7 +220,6 @@ header p {
     border: none;
 }
 
-/* Charts */
 .charts-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -256,7 +249,6 @@ header p {
     width: 100%;
 }
 
-/* Stats Container */
 .stats-container {
     margin-top: 1.5rem;
     padding: 1rem;
@@ -275,7 +267,6 @@ header p {
     color: var(--text-secondary);
 }
 
-/* Data Table */
 .data-card {
     background: var(--surface);
     padding: 1.5rem;
@@ -372,7 +363,6 @@ header p {
     opacity: 0.5;
 }
 
-/* Franchise Metrics */
 .franchise-metric {
     text-align: center;
     padding: 1rem;
@@ -396,7 +386,6 @@ header p {
     margin-top: 0.25rem;
 }
 
-/* Loading */
 .loading {
     position: fixed;
     top: 0;
@@ -431,7 +420,6 @@ header p {
     100% { transform: rotate(360deg); }
 }
 
-/* SELECT2 CUSTOMIZATION */
 .select2-container--default .select2-selection--multiple,
 .select2-container--default .select2-selection--single {
     background: var(--surface-light) !important;
@@ -569,7 +557,6 @@ header p {
     color: var(--error) !important;
 }
 
-/* ESTILOS PARA O SELETOR DE FRANQUIA */
 .franquia-header {
     display: flex;
     justify-content: space-between;
@@ -614,7 +601,6 @@ header p {
     font-size: 1.1rem;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .container {
         grid-template-columns: 1fr;
@@ -646,3 +632,4 @@ header p {
         min-width: auto;
     }
 }
+
