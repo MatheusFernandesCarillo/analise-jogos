@@ -10,13 +10,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
         <header>
             <h1>🎲 Dashboard de Análise de Jogos</h1>
             <p>Análise de vendas de jogos de 1980 a 2017</p>
         </header>
 
-        <!-- Filtros -->
         <div class="sidebar">
             <div class="filters-card">
                 <h3>🔍 Filtros Principais</h3>
@@ -35,21 +33,18 @@
                 <div class="filter-group">
                     <label>Ano:</label>
                     <select id="ano-select" class="filter-select" multiple>
-                        <!-- Populado via JavaScript -->
                     </select>
                 </div>
 
                 <div class="filter-group">
                     <label>Plataforma:</label>
                     <select id="plataforma-select" class="filter-select" multiple>
-                        <!-- Populado via JavaScript -->
                     </select>
                 </div>
 
                 <div class="filter-group">
                     <label>Gênero:</label>
                     <select id="genero-select" class="filter-select" multiple>
-                        <!-- Populado via JavaScript -->
                     </select>
                 </div>
 
@@ -57,13 +52,11 @@
                 <button onclick="limparFiltros()" class="filter-btn secondary">Limpar Filtros</button>
             </div>
 
-            <!-- Filtros para Comparador Regional -->
             <div class="filters-card">
                 <h3>🌍 Comparador Regional</h3>
                 <div class="filter-group">
                     <label>Gênero:</label>
                     <select id="genero-regional-select" class="filter-select">
-                        <!-- Populado via JavaScript -->
                     </select>
                 </div>
                 <div class="filter-group">
@@ -80,14 +73,11 @@
             </div>
         </div>
 
-        <!-- Conteúdo Principal -->
         <div class="main-content">
-            <!-- Região Selecionada -->
             <div class="region-info">
                 <h2 id="regiao-atual">Região: Global</h2>
             </div>
 
-            <!-- Métricas -->
             <div class="section">
                 <h2>📊 Métricas Gerais</h2>
                 <div class="metrics-grid">
@@ -124,7 +114,6 @@
 
             <div class="divider"></div>
 
-            <!-- Gráficos Principais -->
             <div class="section">
                 <h2>📈 Análise de Vendas</h2>
                 <div class="charts-grid">
@@ -141,7 +130,6 @@
 
             <div class="divider"></div>
 
-            <!-- Análise de Franquias -->
             <div class="section">
                 <h2>🎯 Franquias Mais Lucrativas</h2>
                 <div id="franquia-content">
@@ -149,12 +137,9 @@
                         <div id="chart-franquias" class="chart-container"></div>
                     </div>
                     
-                    <!-- Métricas das Franquias -->
                     <div class="metrics-grid" id="franquia-metrics">
-                        <!-- Preenchido via JavaScript -->
                     </div>
 
-                    <!-- Detalhes da Franquia -->
                     <div class="chart-card full-width" id="detalhes-franquia">
                         <div class="franquia-header">
                             <h3>📊 Detalhes da Franquia</h3>
@@ -179,16 +164,12 @@
 
             <div class="divider"></div>
 
-            <!-- Comparador Regional -->
             <div class="section">
                 <h2>🌍 Comparador de Preferências Regionais</h2>
                 <div id="regional-content">
-                    <!-- Métricas Regionais -->
                     <div class="metrics-grid" id="regional-metrics">
-                        <!-- Preenchido via JavaScript -->
                     </div>
 
-                    <!-- Gráficos Regionais -->
                     <div class="charts-grid">
                         <div class="chart-card">
                             <h3>📊 Participação por Região</h3>
@@ -200,13 +181,11 @@
                         </div>
                     </div>
 
-                    <!-- Comparação com Outros Gêneros -->
                     <div class="chart-card full-width">
                         <h3>🔄 Comparação com Outros Gêneros</h3>
                         <div id="chart-comparacao-generos" class="chart-container"></div>
                     </div>
 
-                    <!-- Top Jogos -->
                     <div class="chart-card full-width">
                         <h3>🎮 Top 5 Jogos do Gênero</h3>
                         <div id="tabela-top-jogos"></div>
@@ -214,7 +193,6 @@
                 </div>
             </div>
 
-            <!-- Tabela de Dados -->
             <div class="section">
                 <h2>📋 Dados Filtrados</h2>
                 <div class="data-card">
@@ -224,7 +202,6 @@
         </div>
     </div>
 
-    <!-- Loading -->
     <div id="loading" class="loading">
         <div class="loading-spinner"></div>
         <p>Carregando dados...</p>
@@ -235,3 +212,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
