@@ -1,6 +1,8 @@
+// Variáveis globais
 let dadosCompletos = [];
 let dadosFiltrados = [];
 
+// Inicialização
 document.addEventListener('DOMContentLoaded', function() {
     inicializarSelect2();
     carregarDados();
@@ -61,12 +63,12 @@ function parseCSV(csvText) {
             }
         });
         return obj;
-    }).filter(obj => obj.Nome && obj.Lançamento && obj.Lançamento !== 3); // FILTRA ANO 3
+    }).filter(obj => obj.Nome && obj.Lançamento && obj.Lançamento !== 3);
 }
 
 function popularFiltros() {
     const anos = [...new Set(dadosCompletos.map(d => d.Lançamento))]
-        .filter(ano => ano !== 3) 
+        .filter(ano => ano !== 3)
         .sort((a, b) => a - b);
     
     const anoSelect = $('#ano-select');
@@ -164,7 +166,6 @@ function atualizarMetricas(regiao) {
     const generoTop = Object.entries(vendasPorGenero).reduce((a, b) => a[1] > b[1] ? a : b, ['-', 0]);
     document.getElementById('metric-genero').textContent = generoTop[0];
 
-
     const vendasPorPlataforma = {};
     dados.forEach(jogo => {
         vendasPorPlataforma[jogo.Plataforma] = (vendasPorPlataforma[jogo.Plataforma] || 0) + jogo[regiao];
@@ -214,7 +215,7 @@ function atualizarGraficoPlataformas(dados, regiao) {
 function atualizarGraficoAnos(dados, regiao) {
     const vendasAno = {};
     dados.forEach(jogo => {
-        if (jogo.Lançamento !== 3) { 
+        if (jogo.Lançamento !== 3) {
             vendasAno[jogo.Lançamento] = (vendasAno[jogo.Lançamento] || 0) + jogo[regiao];
         }
     });
@@ -248,8 +249,6 @@ function atualizarGraficoAnos(dados, regiao) {
 
 function atualizarTabela() {
     const dados = dadosFiltrados.length > 0 ? dadosFiltrados.slice(0, 50) : dadosCompletos.slice(0, 50);
-    
-    console.log('Dados para tabela:', dados.length, 'registros');
     
     if (dados.length === 0) {
         document.getElementById('tabela-dados').innerHTML = `
@@ -410,7 +409,7 @@ function atualizarDetalhesFranquia() {
     const dados = dadosFiltrados.length > 0 ? dadosFiltrados : dadosCompletos;
     
     const jogosFranquia = dados.filter(jogo => 
-        jogo.Nome && jogo.Nome.toLowerCase().includes(franquiaSelequiaSelecionada.toLowerCase())
+        jogo.Nome && jogo.Nome.toLowerCase().includes(franquiaSelecionada.toLowerCase())
     );
     
     if (jogosFranquia.length === 0) {
@@ -506,7 +505,6 @@ function atualizarAnaliseRegional() {
         const totalTemp = Object.values(vendasTemp).reduce((a, b) => a + b, 0);
         participacoes[regiaoNome] = totalTemp > 0 ? (vendasTemp[generoSelecionado] / totalTemp) * 100 : 0;
         
-        // Ranking
         const generosOrdenados = Object.entries(vendasTemp)
             .sort((a, b) => b[1] - a[1])
             .map(([g]) => g);
@@ -550,13 +548,13 @@ function atualizarAnaliseRegional() {
     dados
         .filter(jogo => jogo.Genero === generoSelecionado)
         .forEach(jogo => {
-            if (jogo.Lançamento !== 3) { 
+            if (jogo.Lançamento !== 3) {
                 evolucao[jogo.Lançamento] = (evolucao[jogo.Lançamento] || 0) + jogo[regiaoComparacao];
             }
         });
 
     const evolucaoOrdenada = Object.entries(evolucao)
-        .filter(([ano]) => ano !== '3') 
+        .filter(([ano]) => ano !== '3')
         .sort((a, b) => a[0] - b[0]);
 
     const traceEvolucao = {
@@ -722,6 +720,3 @@ function mostrarLoading(mostrar) {
 document.getElementById('regiao-select').addEventListener('change', function() {
     atualizarDashboard();
 });
-
-
-
